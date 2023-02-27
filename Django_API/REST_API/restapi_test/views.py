@@ -8,6 +8,8 @@ from restapi_test.serializers import AddressesSerializer
 
 # Create your views here.
 
+# 전체 조회
+
 
 @csrf_exempt
 def addresses_list(request):
@@ -22,3 +24,26 @@ def addresses_list(request):
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
+
+
+# 개별 조회
+@csrf_exempt
+def addresses(request, pk):
+
+    obj = Addresses.objects.get(pk=pk)
+
+    if request.method == 'GET':
+        serializer = AddressesSerializer(obj)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = AddressesSerializer(obj, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        obj.delete()
+        return HttpResponse(status=204)
