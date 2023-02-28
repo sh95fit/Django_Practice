@@ -1,0 +1,19 @@
+<h1>로그인 페이지</h1>
+<br />
+
+{% if user.is_authenticated %}
+<!-- 로그인 성공 시 -->
+로그인 성공! {{user.username}}님 환영합니다.
+<!-- 로그인 성공 -->
+
+{% else %}
+<!-- 로그인 실패 시 로그인 페이지로 되돌아가기 -->
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <input name="username" type="text" />
+  <input name="password" type="password" />
+  <input type="submit" value="로그인" />
+</form>
+<!-- 로그인 페이지 반환 -->
+{% endif %}
