@@ -36,3 +36,8 @@ class StudentDetail(APIView) :
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, student_id) :
+        model = Student.objects.get(student_id=student_id)
+        model.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
