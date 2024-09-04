@@ -8,6 +8,8 @@ from .forms import SaleInputForm, SaleModelForm, CustomUserCreationForm
 
 from django.core.mail import send_mail
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 def Homepage(request):
     # customer = CustomID.objects.all()
@@ -174,7 +176,7 @@ class HomepageView(generic.TemplateView):
     template_name = "sales/index.html"
 
 
-class SalesInputView(generic.CreateView):
+class SalesInputView(LoginRequiredMixin, generic.CreateView):
     template_name = 'sales/sales_input.html'
     form_class = SaleModelForm
 
@@ -193,19 +195,19 @@ class SalesInputView(generic.CreateView):
     # 기본적으로 Template에서 form으로 받도록 되어 있다 (다른 명칭 적용 X)
 
 
-class SalesListView(generic.ListView):
+class SalesListView(LoginRequiredMixin, generic.ListView):
     template_name = "sales/sales_list.html"
     queryset = Sale.objects.all()
     context_object_name = "key"
 
 
-class SalesDetailView(generic.DetailView):
+class SalesDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = "sales/sales_detail.html"
     queryset = Sale.objects.all()
     context_object_name = "info"
 
 
-class SalesUpdateView(generic.UpdateView):
+class SalesUpdateView(LoginRequiredMixin, generic.UpdateView):
     template_name = 'sales/sales_update.html'
     queryset = Sale.objects.all()
     form_class = SaleModelForm
@@ -215,7 +217,7 @@ class SalesUpdateView(generic.UpdateView):
         return reverse("Sales:List")
 
 
-class SalesDeleteView(generic.DeleteView):
+class SalesDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = "sales/sales_delete.html"
     queryset = Sale.objects.all()
 
