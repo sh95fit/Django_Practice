@@ -1,14 +1,11 @@
-<html>
-  <head></head>
-  <body>
-    <h1>Home Page</h1>
-    음식명 : {{ MenuName }} <br />
-    가격 : {{ Price }} <br />
+{% extends 'base.html' %} {% block content %}
+<h1>Home Page</h1>
+음식명 : {{ MenuName }} <br />
+가격 : {{ Price }} <br />
 
-    <ul>
-      {% for c in Customer %}
-      <li>{{ c }}</li>
-      {% endfor %} {% comment %} 주문자 : {{ Customer }} {% endcomment %}
-    </ul>
-  </body>
-</html>
+<ul>
+  {% for c in Customer %}
+  <li>{{ c }}</li>
+  {% endfor %} {% comment %} 주문자 : {{ Customer }} {% endcomment %}
+</ul>
+{% endblock content %}

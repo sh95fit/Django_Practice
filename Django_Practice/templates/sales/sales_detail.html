@@ -1,6 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
 <h1>상세 목록 - {{info.last_name}} {{info.first_name}}</h1>
 <p>나이 : {{info.age}}</p>
 <p>담당자 명 : {{info.person}}</p>
 
-<a href="/sales/{{info.pk}}/update">업데이트</a>
-<a href="/sales/{{info.pk}}/delete">삭제</a>
+<a href={% url "Sales:Update" info.pk %}>업데이트</a>
+<a href={% url "Sales:Delete" info.pk %}>삭제</a>
+{% endblock content %}

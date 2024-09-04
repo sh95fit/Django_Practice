@@ -1,7 +1,7 @@
-<body>
-  <p>정보을 입력해주세요</p>
-  <form method="post">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit">추가</button>
-  </form>
-</body>
+{% extends 'base.html' %} {% block content %}
+<p>정보을 입력해주세요</p>
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">추가</button>
+</form>
+{% endblock content %}
