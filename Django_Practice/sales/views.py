@@ -6,6 +6,8 @@ from .models import CustomID, Sale, Person
 
 from .forms import SaleInputForm, SaleModelForm
 
+from django.core.mail import send_mail
+
 
 def Homepage(request):
     # customer = CustomID.objects.all()
@@ -178,6 +180,15 @@ class SalesInputView(generic.CreateView):
 
     def get_success_url(self):
         return reverse("Sales:List")
+
+    def form_valid(self, form):
+        send_mail(
+            subject="New Information Create",
+            message="Go Homepage",
+            from_email="admin@practice.com",  # 송신하는 자
+            recipient_list=["test@test.com"]  # 수신하는 자
+        )
+        return super(SalesInputView, self).form_valid(form)
 
     # 기본적으로 Template에서 form으로 받도록 되어 있다 (다른 명칭 적용 X)
 
