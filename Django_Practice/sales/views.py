@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 from .models import CustomID, Sale, Person
 
-from .forms import SaleInputForm, SaleModelForm
+from .forms import SaleInputForm, SaleModelForm, CustomUserCreationForm
 
 from django.core.mail import send_mail
 
@@ -221,3 +221,11 @@ class SalesDeleteView(generic.DeleteView):
 
     def get_success_url(self):
         return reverse("Sales:List")
+
+
+class SignupView(generic.CreateView):
+    template_name = "registration/signup.html"
+    form_class = CustomUserCreationForm
+
+    def get_success_url(self):
+        return reverse("Login")

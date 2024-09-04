@@ -1,7 +1,7 @@
 from django.urls import path, include
 
 from .views import Homepage, SalesList, SalesDetail, SaleInput, SaleUpdate, SaleDelete
-from .views import HomepageView, SalesInputView, SalesListView, SalesDetailView, SalesUpdateView, SalesDeleteView
+from .views import HomepageView, SalesInputView, SalesListView, SalesDetailView, SalesUpdateView, SalesDeleteView, SignupView
 
 app_name = "Sales"
 
@@ -18,4 +18,7 @@ urlpatterns = [
     path('sales/<int:pk>/update', SalesUpdateView.as_view(), name="Update"),  # 제너릭 뷰
     # path('sales/<int:pk>/delete', SaleDelete, name="Delete"), # 일반 함수 적용 형태
     path('sales/<int:pk>/delete', SalesDeleteView.as_view(), name="Delete"),  # 제너릭 뷰
+
+    # 회원가입 url
+    path('signup', SignupView.as_view(), name="Signup"),
 ]
