@@ -42,4 +42,4 @@ class Person(models.Model):
     customer = models.OneToOneField(CustomID, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.customer.email
+        return self.customer.username

@@ -1,0 +1,9 @@
+<body>
+  <p>
+    {{ sales.last_name }} {{ sales.first_name }} 님의 수정할 정보을 입력해주세요
+  </p>
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit">수정</button>
+  </form>
+</body>
