@@ -1,0 +1,7 @@
+{% extends 'base.html' %} {% block content %}
+<p>로그인 정보를 입력해주세요</p>
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">로그인</button>
+</form>
+{% endblock content %}
