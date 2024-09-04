@@ -7,13 +7,14 @@ from .forms import SaleInputForm, SaleModelForm
 
 
 def Homepage(request):
-    customer = CustomID.objects.all()
-    context = {
-        "MenuName": "Noodle",
-        "Price": "10,000 won",
-        "Customer": customer
-    }
-    return render(request, "sales/index.html", context)
+    # customer = CustomID.objects.all()
+    # context = {
+    #     "MenuName": "Noodle",
+    #     "Price": "10,000 won",
+    #     "Customer": customer
+    # }
+    # return render(request, "sales/index.html", context)
+    return render(request, "sales/index.html")
 
 
 def SalesList(request):

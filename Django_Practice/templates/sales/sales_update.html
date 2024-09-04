@@ -2,12 +2,30 @@
 
 
 {% block content %}
-  <p>
-    {{ sales.last_name }} {{ sales.first_name }} 님의 수정할 정보을 입력해주세요
-  </p>
-  <form method="post">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit">수정</button>
-    <a href={% url "Sales:Detail" sales.pk %}> 상세 페이지으로 돌아가기 </a>
-  </form>
+<section class="text-gray-600 body-font overflow-hidden">
+  <div class="container px-5 py-24 mx-auto">
+    <div class="lg:w-4/5 mx-auto flex flex-wrap">
+      <div class="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
+        <h2 class="text-sm title-font text-gray-500 tracking-widest">상세 목록</h2>
+        <h1 class="text-gray-900 text-3xl title-font font-medium mb-4">{{sales.last_name}} {{sales.first_name}}</h1>
+        <div class="flex mb-4">
+          <a class="flex-grow text-red-500 border-b-2 border-red-500 py-2 text-lg px-1">고객 정보</a>
+          <a class="flex-grow border-b-2 border-gray-300 py-2 text-lg px-1">평가</a>
+          <a class="flex-grow border-b-2 border-gray-300 py-2 text-lg px-1">상세정보</a>
+        </div>
+        <p class="leading-relaxed mb-4">{{sales.last_name}} {{sales.first_name}} 님의 수정 가능한 고객 정보입니다.</p>
+        <form method="post">
+          {% csrf_token %} {{ form.as_p }}
+          <div class="flex mt-10">
+          <button class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded" type='submit'>업데이트</button>
+          <a href={% url "Sales:Detail" sales.pk %} class="inline-flex items-center justify-center text-white bg-gray-500 border-0 py-2 px-6 focus:outline-none hover:bg-gray-600 rounded ml-4"> 돌아가기 </a>
+          </div>
+        </form>
+        </div>
+      <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" src="https://dummyimage.com/400x400">
+    </div>
+  </div>
+</section>
+
+
 {% endblock content %}
