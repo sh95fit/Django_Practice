@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from django.views import generic
+from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse
 
 from .models import CustomID, Sale, Person
@@ -161,3 +162,51 @@ def SaleDelete(request, pk):
     sale.delete()
 
     return redirect("/sales")
+
+
+#################################################################
+# 클래스를 이용한 뷰
+
+
+class HomepageView(generic.TemplateView):
+    template_name = "sales/index.html"
+
+
+class SalesInputView(generic.CreateView):
+    template_name = 'sales/sales_input.html'
+    form_class = SaleModelForm
+
+    def get_success_url(self):
+        return reverse("Sales:List")
+
+    # 기본적으로 Template에서 form으로 받도록 되어 있다 (다른 명칭 적용 X)
+
+
+class SalesListView(generic.ListView):
+    template_name = "sales/sales_list.html"
+    queryset = Sale.objects.all()
+    context_object_name = "key"
+
+
+class SalesDetailView(generic.DetailView):
+    template_name = "sales/sales_detail.html"
+    queryset = Sale.objects.all()
+    context_object_name = "info"
+
+
+class SalesUpdateView(generic.UpdateView):
+    template_name = 'sales/sales_update.html'
+    queryset = Sale.objects.all()
+    form_class = SaleModelForm
+    context_object_name = "sales"
+
+    def get_success_url(self):
+        return reverse("Sales:List")
+
+
+class SalesDeleteView(generic.DeleteView):
+    template_name = "sales/sales_delete.html"
+    queryset = Sale.objects.all()
+
+    def get_success_url(self):
+        return reverse("Sales:List")
