@@ -1,0 +1,23 @@
+<head>
+  <style>
+    .sales {
+      padding-top: 20px;
+      padding-bottom: 30px;
+      padding-right: 10px;
+      padding-left: 10px;
+      background-color: #cdcdcd;
+    }
+  </style>
+</head>
+
+<h1>세일 목록</h1>
+<body>
+  {% for sale in key %}
+  <div class="sales">
+    <a href="/sales/{{sale.id}}"
+      >{{ sale.first_name }} {{sale.last_name}} &nbsp (Age : {{ sale.age}})</a
+    >
+    <br />
+  </div>
+  {% endfor %}
+</body>

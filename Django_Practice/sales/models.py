@@ -34,6 +34,9 @@ class Sale(models.Model):
     # your_images = models.ImageField(blank=True, null=True)
     # your_file = models.FileField(blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class Person(models.Model):
     customer = models.OneToOneField(CustomID, on_delete=models.CASCADE)
