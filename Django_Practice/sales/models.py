@@ -8,9 +8,18 @@ from django.db import models
 # AbstractUser : 모델을 django에서 미리 지정해둬 간편하게 가져와 사용 가능
 from django.contrib.auth.models import AbstractUser
 
+from django.db.models.signals import post_save
+
 
 class CustomID (AbstractUser):
     pass  # AbstractUser을 그대로 사용할 경우
+
+
+class UserProfile(models.Model):
+    customer = models.OneToOneField(CustomID, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.customer.username
 
 
 # 모델 생성 시 ID는 django에서 자동 생성!
@@ -40,6 +49,17 @@ class Sale(models.Model):
 
 class Person(models.Model):
     customer = models.OneToOneField(CustomID, on_delete=models.CASCADE)
+    groups = models.OneToOneField(
+        UserProfile, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.customer.username
+
+
+def CreateUserProfileSignal(sender, instance, created, **kwargs):
+    # print(instance, created)  # 어떤 정보가 오는지 확인 (created : 새로 생성되는 경우만 True 반환)
+    if created:
+        UserProfile.objects.create(customer=instance)
+
+
+post_save.connect(CreateUserProfileSignal, sender=CustomID)
