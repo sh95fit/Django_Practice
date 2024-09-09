@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 
 import { useNavigate } from 'react-router-dom';
 
+import CreateRoomPage from "./NewMakeRoomPage";
+
 // HOC를 이용해 navigate를 props로 전달
 function withRouter(Component) {
   function ComponentWithRouterProp(props) {
@@ -26,9 +28,13 @@ class Room extends Component{
       votesToSkip: 1,
       guestCanPause: false,
       isHost:false,
+      showSettings:false,
     };
     // this.roomTitle = this.props.match.params.roomTitle; (v6에서는 사용할 수 없음! v5에서 사용하는 형태)
     this.leaveButtonPressed= this.leaveButtonPressed.bind(this);
+    this.updateShowSettings= this.updateShowSettings.bind(this);
+    this.renderSettingsButton = this.renderSettingsButton.bind(this);
+    this.renderSettings = this.renderSettings.bind(this);
   }
 
   componentDidMount() {
@@ -66,11 +72,57 @@ class Room extends Component{
     })
   }
 
+  updateShowSettings(value){
+    this.setState({
+      showSettings: value,
+    });
+  }
+
+  renderSettingsButton() {
+    return (
+      <Grid item xs={12} align="center">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => this.updateShowSettings(true)}
+        >Settings</Button>
+      </Grid>
+    )
+  }
+
+  renderSettings() {
+    return (
+      <Grid container spacing={1}>
+        <Grid item xs={12} align="center">
+          <CreateRoomPage
+            update={true}
+            votesToSkip={this.state.votesToSkip}
+            guestCanPause={this.state.guestCanPause}
+            roomTitle={this.roomTitle}
+            updateCallback={() => { }}
+          />
+        </Grid>
+        <Grid item xs={12} align="center">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => this.updateShowSettings(false)}
+          >
+            닫기
+          </Button>
+        </Grid>
+      </Grid>
+    );
+  }
+
 
   render() {
     const { roomTitle } = this.props;
     const { votesToSkip, guestCanPause, isHost } = this.state;
 
+    if (this.state.showSettings) {
+      return this.renderSettings();
+    }
     return(
       <Grid container spacing = {1}>
         <Grid item xs={12} align="center">
@@ -93,6 +145,7 @@ class Room extends Component{
             호스트 : {isHost !== undefined ? isHost.toString() : '정보 없음'}
           </Typography>
         </Grid>
+        {this.state.isHost ? this.renderSettingsButton() : null}
         <Grid item xs={12} align="center">
           <Button
             variant="contained"
