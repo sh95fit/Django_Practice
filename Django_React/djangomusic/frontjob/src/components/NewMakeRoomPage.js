@@ -10,7 +10,8 @@ import { Link } from "react-router-dom";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-
+import { Collapse } from "@mui/material";
+import { Alert } from "@mui/material";
 
 import { useNavigate } from 'react-router-dom';
 
@@ -27,18 +28,27 @@ function withRouter(Component) {
 
 
 class NewMakeRoomPage extends Component{
-  defaultVotes = 1;
+  static defaultProps = {
+    votesToSkip: 2,
+    guestCanPause: true,
+    update: false,
+    roomTitle: null,
+    updateCallback: () => {},
+  };
 
   constructor(props) {
     super(props);
     this.state = {
-      guestCanPause: true,
-      votesToSkip: this.defaultVotes,
+      guestCanPause: this.props.guestCanPause,
+      votesToSkip: this.props.votesToSkip,
+      errorMsg: "",
+      successMsg: "",
     };
 
     this.handleRoomButtonPressed = this.handleRoomButtonPressed.bind(this);
     this.handleVotesChange = this.handleVotesChange.bind(this);
     this.handleGuestCanPauseChange = this.handleGuestCanPauseChange.bind(this);
+    this.handleUpdateButtonPressed = this.handleUpdateButtonPressed.bind(this);
   }
 
   handleVotesChange(e){
@@ -66,12 +76,100 @@ class NewMakeRoomPage extends Component{
     fetch("/musicapi/create", requestOptions).then((response)=>response.json()).then((data)=> this.props.navigate("/room/" + data.title));
   }
 
-  render() {
+  handleUpdateButtonPressed(){
+    const requestOptions = {
+      method: "PATCH",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        vote_to_skip: this.state.votesToSkip,
+        guest_can_pause: this.state.guestCanPause,
+        title: this.props.roomTitle,
+      }),
+    };
+
+    fetch("/musicapi/update", requestOptions)
+      .then((response) => {
+        if (response.ok) {
+          this.setState({
+            successMsg: "Success Update!"
+          });
+        } else {
+          this.setState({
+            errorMsg: "Failed Update..."
+          });
+        }
+        this.props.updateCallback();
+      });
+      // .then((data)=> this.props.navigate("/room/" + data.title));
+  }
+
+
+  renderCreateButtons() {
     return (
       <Grid container spacing={1}>
         <Grid item xs={12} align="center">
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={this.handleRoomButtonPressed}
+          >
+            방 만들기
+          </Button>
+        </Grid>
+        <Grid item xs={12} align="center">
+          <Button color="secondary" variant="contained" to="/" component={Link}>
+            뒤로가기
+          </Button>
+        </Grid>
+      </Grid>
+    );
+  }
+
+  renderUpdateButton(){
+    return (
+      <Grid item xs={12} align="center">
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={this.handleUpdateButtonPressed}
+        >
+          Update
+        </Button>
+      </Grid>
+    )
+  }
+
+  render() {
+    const newtitle = this.props.update ? "🎵Room Update" : "🎵음악 방 만들기";
+
+    return (
+      <Grid container spacing={1}>
+        <Grid item xs={12} align="center">
+          <Collapse in={this.state.errorMsg != "" || this.state.successMsg != ""}>
+            {this.state.successMsg != "" ? (
+              <Alert
+                severity="success"
+                onClose={() => {
+                  this.setState({ successMsg: "" });
+                }}
+              >
+                {this.state.successMsg}
+              </Alert>
+            ) : (
+              <Alert
+                severity="error"
+                onClose={() => {
+                  this.setState({ errorMsg: "" });
+                }}
+              >
+                {this.state.errorMsg}
+              </Alert>
+            )}
+          </Collapse>
+        </Grid>
+        <Grid item xs={12} align="center">
           <Typography component="h4" variant="h4">
-          🎵음악 방 만들기
+          {newtitle}
           </Typography>
         </Grid>
         <Grid item xs={12} align="center">
@@ -81,7 +179,8 @@ class NewMakeRoomPage extends Component{
             </FormHelperText>
             <RadioGroup
               row
-              defaultValue="true"
+              value={this.state.guestCanPause.toString()}
+              // defaultValue={this.props.guestCanPause.toString()}
               onChange={this.handleGuestCanPauseChange}
             >
               <FormControlLabel
@@ -105,7 +204,7 @@ class NewMakeRoomPage extends Component{
               required={true}
               type="number"
               onChange={this.handleVotesChange}
-              defaultValue={this.defaultVotes}
+              defaultValue={this.state.votesToSkip}
               inputProps={{
                 min: 1,
                 style: { textAlign: "center" },
@@ -116,20 +215,8 @@ class NewMakeRoomPage extends Component{
             </FormHelperText>
           </FormControl>
         </Grid>
-        <Grid item xs={12} align="center">
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={this.handleRoomButtonPressed}
-          >
-            방 만들기
-          </Button>
-        </Grid>
-        <Grid item xs={12} align="center">
-          <Button color="secondary" variant="contained" to="/" component={Link}>
-            뒤로가기
-          </Button>
-        </Grid>
+
+        {this.props.update ? this.renderUpdateButton() : this.renderCreateButtons()}
       </Grid>
     );
   }
