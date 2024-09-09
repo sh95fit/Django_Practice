@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, reverse
+from django.http import JsonResponse
 from rest_framework import generics, status
 
 from .serializer import MusicRoomSerializer, CreateRoomSerializer
@@ -86,3 +87,15 @@ class JoinRoom(APIView):
             return Response({"Bad Request": "Wrong Room number..."}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"Bad Request": "Wrong Information..."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserInRoom(APIView):
+    def get(self, request, format=None):
+        if not self.request.session.exists(self.request.session.session_key):
+            self.request.session.create()
+
+        data = {
+            'title': self.request.session.get("room_title")
+        }
+
+        return JsonResponse(data, status=status.HTTP_200_OK)
