@@ -15,6 +15,7 @@ export default class Home extends Component{
     this.state = {
       roomTitle:null,
     };
+    this.clearRoomTitle = this.clearRoomTitle.bind(this);
   }
 
   async componentDidMount() {
@@ -49,6 +50,12 @@ export default class Home extends Component{
     );
   }
 
+  clearRoomTitle() {
+    this.setState({
+      roomTitle: null,
+    });
+  }
+
   render() {
     return (
       <Router>
@@ -63,7 +70,7 @@ export default class Home extends Component{
           <Route path="/join" element={<RoomJoinPage/>}></Route>
           <Route path="/create" element={<NewMakeRoomPage/>}></Route>
           {/* <Route path="/room/:roomTitle" element={<Room/>}></Route> */}
-          <Route path="/room/:roomTitle" element={<RoomWrapper/>}></Route>
+          <Route path="/room/:roomTitle" element={<RoomWrapper leaveRoomCallback={this.clearRoomTitle}/>}></Route>
         </Routes>
       </Router>
     )
