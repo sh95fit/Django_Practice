@@ -7,3 +7,9 @@ class MusicRoomSerializer(serializers.ModelSerializer):
         model = MusicRoom
         fields = ('id', 'title', 'host', 'guest_can_pause',
                   'vote_to_skip', 'create_dates')
+
+
+class CreateRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MusicRoom
+        fields = ('guest_can_pause', 'vote_to_skip')

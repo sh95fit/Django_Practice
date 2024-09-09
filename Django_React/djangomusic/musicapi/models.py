@@ -18,8 +18,9 @@ def generate_unique_title():
 
 # 음악 방
 class MusicRoom(models.Model):
-    title = models.CharField(max_length=8, default="", unique=True)
-    host = models.CharField(max_length=50, unique=True)
+    title = models.CharField(
+        max_length=8, default=generate_unique_title, unique=True)
+    host = models.CharField(max_length=50, unique=True)  # 세션값으로 처리
     guest_can_pause = models.BooleanField(null=False, default=False)
     vote_to_skip = models.IntegerField(null=False, default=1)
     create_dates = models.DateTimeField(auto_now_add=True)
