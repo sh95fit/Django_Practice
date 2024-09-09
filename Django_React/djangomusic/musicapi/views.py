@@ -36,6 +36,8 @@ class CreateRoomView(APIView):
                 musicRoom.save(
                     update_fields=['guest_can_pause', 'vote_to_skip'])
 
+                self.request.session['room_title'] = musicRoom.title
+
                 return Response(MusicRoomSerializer(musicRoom).data, status=status.HTTP_200_OK)
             else:
                 musicRoom = MusicRoom(
@@ -63,3 +65,24 @@ class GetRoom(APIView):
             return Response({"invalid room": "Wrong room name..."}, status=status.HTTP_404_NOT_FOUND)
 
         return Response({'Incorrect Request': "Incorrect Request..."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class JoinRoom(APIView):
+    lookup_url_kwarg = 'title'
+
+    def post(self, request, format=None):
+        if not self.request.session.exists(self.request.session.session_key):
+            self.request.session.create()
+
+        title = request.data.get(self.lookup_url_kwarg)
+
+        if title != None:
+            room_result = MusicRoom.objects.filter(title=title)
+            if len(room_result) > 0:
+                room = room_result[0]
+                self.request.session['room_title'] = title
+                return Response({"message": "Access the Room"}, status=status.HTTP_200_OK)
+
+            return Response({"Bad Request": "Wrong Room number..."}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"Bad Request": "Wrong Information..."}, status=status.HTTP_400_BAD_REQUEST)
