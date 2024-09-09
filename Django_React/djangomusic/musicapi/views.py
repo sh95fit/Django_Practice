@@ -46,3 +46,20 @@ class CreateRoomView(APIView):
                 return Response(MusicRoomSerializer(musicRoom).data, status=status.HTTP_201_CREATED)
 
         return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetRoom(APIView):
+    serializer_class = MusicRoomSerializer
+    lookup_url_kwarg = 'title'
+
+    def get(self, request, format=None):
+        title = request.GET.get(self.lookup_url_kwarg)
+        if title != None:
+            room = MusicRoom.objects.filter(title=title)
+            if len(room) > 0:
+                data = MusicRoomSerializer(room[0]).data
+                data['is_host'] = self.request.session.session_key == room[0].host
+                return Response(data, status=status.HTTP_200_OK)
+            return Response({"invalid room": "Wrong room name..."}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'Incorrect Request': "Incorrect Request..."}, status=status.HTTP_400_BAD_REQUEST)

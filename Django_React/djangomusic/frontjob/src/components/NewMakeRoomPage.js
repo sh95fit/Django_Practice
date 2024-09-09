@@ -12,7 +12,21 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
 
-export default class NewMakeRoomPage extends Component{
+import { useNavigate } from 'react-router-dom';
+
+// HOC를 이용해 navigate를 props로 전달
+function withRouter(Component) {
+  function ComponentWithRouterProp(props) {
+    const navigate = useNavigate();
+    return <Component {...props} navigate={navigate} />;
+  }
+
+  return ComponentWithRouterProp;
+}
+
+
+
+class NewMakeRoomPage extends Component{
   defaultVotes = 1;
 
   constructor(props) {
@@ -49,7 +63,7 @@ export default class NewMakeRoomPage extends Component{
       }),
     };
 
-    fetch("/musicapi/create", requestOptions).then((response)=>response.json()).then((data)=>console.log(data));
+    fetch("/musicapi/create", requestOptions).then((response)=>response.json()).then((data)=> this.props.navigate("/room/" + data.title));
   }
 
   render() {
@@ -120,3 +134,5 @@ export default class NewMakeRoomPage extends Component{
     );
   }
 }
+
+export default withRouter(NewMakeRoomPage);
