@@ -29,6 +29,7 @@ class Room extends Component{
       guestCanPause: false,
       isHost:false,
       showSettings:false,
+      spotifyAuthenticated: false,
     };
     // this.roomTitle = this.props.match.params.roomTitle; (v6에서는 사용할 수 없음! v5에서 사용하는 형태)
     this.leaveButtonPressed= this.leaveButtonPressed.bind(this);
@@ -36,6 +37,7 @@ class Room extends Component{
     this.renderSettingsButton = this.renderSettingsButton.bind(this);
     this.renderSettings = this.renderSettings.bind(this);
     this.getRoomDetails = this.getRoomDetails.bind(this);
+    this.authenticateSpotify = this.authenticateSpotify.bind(this);
   }
 
   componentDidMount() {
@@ -56,11 +58,27 @@ class Room extends Component{
         guestCanPause: data.guest_can_pause,
         isHost: data.is_host,
       });
+      if(this.state.isHost){
+        this.authenticateSpotify();
+      }
     })
     .catch((error) => {
       console.error('Error fetching room details:', error);
     });
   }
+
+  authenticateSpotify() {
+    fetch("/spotify/authenticate").then((response) => response.json()).then((data) => {
+      this.setState({spotifyAuthenticated: data.status});
+      console.log(data.status);
+      if(!data.status) {
+        fetch("/spotify/get-auth").then((response) => response.json()).then((data) => {
+          window.location.replace(data.url); // 리다이렉트 방식 중 하나
+        })
+      }
+    })
+  }
+
 
   leaveButtonPressed() {
     const requestOptions = {
